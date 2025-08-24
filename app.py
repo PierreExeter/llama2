@@ -3,20 +3,44 @@ import replicate
 import os
 
 # App title
-st.set_page_config(page_title="🦙💬 Llama 2 Chatbot")
+st.set_page_config(page_title="Llama 2 Chatbot")
 
 # Replicate Credentials
 with st.sidebar:
-    st.title('🦙💬 Llama 2 Chatbot')
-    if 'REPLICATE_API_TOKEN' in st.secrets:
-        st.success('API key already provided!', icon='✅')
-        replicate_api = st.secrets['REPLICATE_API_TOKEN']
-    else:
-        replicate_api = st.text_input('Enter Replicate API token:', type='password')
-        if not (replicate_api.startswith('r8_') and len(replicate_api)==40):
-            st.warning('Please enter your credentials!', icon='⚠️')
+    st.title('Llama 2 Chatbot')
+
+    # Check if API key is already provided in Streamlit secrets
+    replicate_api = None
+    token_valid = False
+
+    # Try to get valid token from secrets
+    try:
+        if 'REPLICATE_API_TOKEN' in st.secrets:
+            token = st.secrets['REPLICATE_API_TOKEN']
+            if token and token.startswith('r8_') and len(token) == 40:
+                replicate_api = token
+                token_valid = True
+                st.success('API key from secrets!', icon='✅')
+    except:
+        pass
+
+    # If no valid token, get user input
+    if not token_valid:
+        user_input = st.text_input('Enter Replicate API token:', type='password')
+        
+        if user_input:
+            if user_input.startswith('r8_') and len(user_input) == 40:
+                replicate_api = user_input
+                token_valid = True
+                st.success('Valid token! Proceed to chat.', icon='✅')
+            else:
+                st.error('Invalid token format! Must start with "r8_" and be 40 chars.')
         else:
-            st.success('Proceed to entering your prompt message!', icon='👉')
+            st.info('Enter API token to continue')
+
+    # Set environment only if valid
+    if token_valid:
+        os.environ['REPLICATE_API_TOKEN'] = replicate_api
 
     # Refactored from https://github.com/a16z-infra/llama2-chatbot
     st.subheader('Models and parameters')
@@ -31,9 +55,6 @@ with st.sidebar:
     temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=5.0, value=0.1, step=0.01)
     top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
     max_length = st.sidebar.slider('max_length', min_value=64, max_value=4096, value=512, step=8)
-    
-    st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
-os.environ['REPLICATE_API_TOKEN'] = replicate_api
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
@@ -62,7 +83,7 @@ def generate_llama2_response(prompt_input):
     return output
 
 # User-provided prompt
-if prompt := st.chat_input(disabled=not replicate_api):
+if prompt := st.chat_input(disabled=not token_valid):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.write(prompt)
