@@ -1,12 +1,16 @@
-# Llama 2 Chat
+# Llama 2 Chatbot
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://llama2-chat-project.streamlit.app/)
+
+
+![chatbot_screenshot](img/Selection_020.png)
+
 
 This chatbot is created using the open-source Llama 2 LLM model from Meta. The models are hosted on the [Replicate](https://replicate.com/) platform. The app is built with [Streamlit](https://streamlit.io/) and deployed on [Streamlit Community Cloud](https://share.streamlit.io/).
 
 The code is adapted from [this repository](https://github.com/dataprofessor/llama2).
 
-Use the app[HERE](https://llama2-chat-project.streamlit.app/).
+Use the app [HERE](https://llama2-chat-project.streamlit.app/).
 
 ## Local Installation
 
