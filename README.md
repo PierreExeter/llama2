@@ -10,7 +10,7 @@ This chatbot is created using the open-source Llama 2 LLM model from Meta. The m
 
 The code is adapted from [this repository](https://github.com/dataprofessor/llama2).
 
-Use the app [HERE](https://llama2-chat-project.streamlit.app/).
+[VIEW LIVE DEMO](https://llama2-chat-project.streamlit.app/)
 
 ## Local Installation
 
